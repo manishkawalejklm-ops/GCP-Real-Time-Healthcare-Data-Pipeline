@@ -1,248 +1,586 @@
 # GCP-Real-Time-Healthcare-Data-Pipeline
 Engineered an end-to-end Real-Time Streaming Data Pipeline on Google Cloud Platform (GCP) using Python, Google Cloud Pub/Sub, Apache Beam, and Google Cloud Dataflow, enabling continuous ingestion and processing of simulated patient vital events with 2-second streaming intervals.
 
-image
+
+# 🏥 Real-Time Patient Vital Monitoring Pipeline on Google Cloud
+
+A production-style real-time streaming Data Engineering project built using **Google Cloud Platform**, **Apache Beam**, **Dataflow**, **Pub/Sub**, **BigQuery**, **Google Cloud Storage**, and **Power BI**.
+
+The project simulates patient vital signs, processes streaming data using the Medallion Architecture (Bronze → Silver → Gold), stores curated datasets, and provides a live analytics dashboard.
+
+---
+
+# 📌 Project Architecture
+
+```
+Patient Simulator
+       │
+       ▼
+ Google Cloud Pub/Sub
+       │
+       ▼
+ Apache Beam Pipeline
+       │
+ ┌─────┼───────────┐
+ │     │           │
+ ▼     ▼           ▼
+Bronze Silver     Gold
+ GCS    GCS     BigQuery
+                    │
+                    ▼
+               Power BI
+```
+
+---
+
+# 🚀 Technologies Used
+
+- Google Cloud Platform (GCP)
+- Google Cloud Pub/Sub
+- Apache Beam
+- Google Cloud Dataflow
+- Google Cloud Storage
+- BigQuery
+- Python
+- Power BI
+- Git & GitHub
+
+---
+
+# 📂 Project Structure
+
+```
+patient-vital-monitor/
+│
+├── simulator/
+│   ├── patient_vital_simulator.py
+│   └── .env
+│
+├── dataflow/
+│   ├── streaming_medallion_pipeline.py
+│   └── .env
+│
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+---
+
+# 🔄 End-to-End Workflow
+
+---
+
+## Step 1 – Create Google Cloud Account
+
+- Create a GCP Free Trial Account
+- Add Billing Details
+- Receive $300 Free Credits
+
+---
+
+## Step 2 – Create a New GCP Project
+
+- Create a new project
+- Select the project
+- Copy the Project ID
+
+---
+
+## Step 3 – Open Cloud Shell
+
+Launch:
+
+- Cloud Shell Terminal
+- Cloud Shell Editor (VS Code)
+
+---
+
+## Step 4 – Create Project
+
+```bash
+mkdir patient-vital-monitor
+cd patient-vital-monitor
+```
+
+---
+
+## Step 5 – Create Simulator
+
+```bash
+mkdir simulator
+cd simulator
+
+touch patient_vital_simulator.py
+touch .env
+```
+
+---
+
+## Step 6 – Develop Patient Simulator
+
+The simulator performs the following:
+
+- Loads environment variables
+- Generates Patient IDs
+- Simulates:
+  - Heart Rate
+  - SPO₂
+  - Temperature
+  - Blood Pressure
+- Injects random faulty records
+- Converts records to JSON
+- Publishes messages to Pub/Sub
+
+---
+
+## Step 7 – Configure Simulator
+
+Example `.env`
+
+```text
+PROJECT_ID=my-project
+TOPIC_NAME=patient-vitals
+PATIENT_COUNT=100
+STREAM_INTERVAL=2
+ERROR_RATE=0.05
+```
+
+---
+
+## Step 8 – Enable Required APIs
+
+Enable:
+
+- Pub/Sub API
+- Cloud Storage API
+- Dataflow API
+- BigQuery API
+
+---
+
+## Step 9 – Create Pub/Sub Resources
+
+Create
+
+- Topic
+- Pull Subscription
+
+---
+
+## Step 10 – Configure IAM
+
+Grant:
+
+- Pub/Sub Admin
+- BigQuery Admin
+- Storage Admin
+- Editor (Optional)
+
+---
+
+## Step 11 – Run Simulator
+
+```bash
+python patient_vital_simulator.py
+```
+
+Verify messages are arriving in Pub/Sub.
+
+---
+
+## Step 12 – Stop Simulator
+
+```
+Ctrl + C
+```
+
+---
+
+## Step 13 – Create Dataflow Module
+
+```bash
+cd ..
+
+mkdir dataflow
+
+cd dataflow
+
+touch streaming_medallion_pipeline.py
+
+touch .env
+```
+
+---
+
+## Step 14 – Develop Apache Beam Pipeline
+
+Pipeline stages:
+
+- Read Pub/Sub
+- Bronze Processing
+- Silver Processing
+- Gold Processing
+- BigQuery Output
+
+---
+
+## Step 15 – Configure Dataflow
+
+Example `.env`
+
+```text
+PROJECT_ID=my-project
+
+SUBSCRIPTION=patient-sub
+
+BRONZE_PATH=gs://bucket/bronze
+
+SILVER_PATH=gs://bucket/silver
+
+BQ_TABLE=patient_dataset.gold_patient_vitals
+
+TEMP_PATH=gs://bucket/temp
+
+STAGING_PATH=gs://bucket/staging
+
+REGION=asia-south1
+```
+
+---
+
+## Step 16 – Create Storage Bucket
+
+Create bucket
+
+```
+gs://patient-vital-monitor
+```
+
+Directory structure
+
+```
+bronze/
+
+silver/
+
+temp/
+
+staging/
+```
+
+---
+
+## Step 17 – Create BigQuery Resources
+
+Create
+
+Dataset
+
+```
+patient_dataset
+```
+
+Create Gold Table
+
+```
+gold_patient_vitals
+```
+
+---
+
+## Step 18 – Install Dependencies
+
+```bash
+pip install apache-beam
+
+pip install apache-beam[gcp]
+
+pip install python-dotenv
+
+pip install google-cloud-pubsub
+```
+
+---
+
+## Step 19 – Run Dataflow Pipeline
+
+Execute Beam pipeline.
+
+The streaming Dataflow job starts and continuously processes incoming patient data.
+
+---
+
+## Step 20 – Restart Simulator
+
+```bash
+python patient_vital_simulator.py
+```
+
+Patient events begin streaming to Pub/Sub.
+
+---
+
+# 📊 Streaming Data Flow
+
+```
+Patient Simulator
+
+        │
+
+        ▼
+
+Google Cloud Pub/Sub
+
+        │
+
+        ▼
+
+Apache Beam Pipeline
+
+        │
+
+        ▼
+
+──────── Bronze ────────
+
+Decode UTF-8
+
+Store Raw JSON
+
+Write to GCS
+
+        │
+
+        ▼
+
+──────── Silver ────────
+
+Parse JSON
+
+Validate Records
+
+Remove Invalid Data
+
+Standardize Schema
+
+Write Clean Data
+
+        │
+
+        ▼
+
+──────── Gold ─────────
+
+Calculate Risk Score
+
+Assign Risk Category
+
+Aggregate by Patient
+
+Generate Analytics
+
+Write to BigQuery
+```
+
+---
+
+# 🥉 Bronze Layer
+
+Stores raw streaming data exactly as received.
+
+Operations:
+
+- Decode bytes
+- Preserve raw JSON
+- Archive to Cloud Storage
+
+---
+
+# 🥈 Silver Layer
+
+Performs data cleaning.
+
+Operations:
+
+- Parse JSON
+- Validate schema
+- Remove invalid records
+- Handle missing values
+- Standardize formats
+
+---
+
+# 🥇 Gold Layer
+
+Creates business-ready analytics.
+
+Calculates:
+
+- Risk Score
+- Risk Level
+- Average Heart Rate
+- Latest Temperature
+- Latest SPO₂
+- Latest Blood Pressure
+
+Stores curated data in BigQuery.
+
+---
+
+# 📈 Verify Pipeline
+
+Verify:
+
+- Pub/Sub Messages
+- Bronze Bucket
+- Silver Bucket
+- Dataflow Monitoring
+- BigQuery Tables
+
+---
+
+# 🔗 Push to GitHub
+
+```bash
+git init
+
+git add .
+
+git commit -m "Initial Commit"
+
+git branch -M main
+
+git remote add origin <repo-url>
+
+git push -u origin main
+```
+
+---
+
+# 📊 Connect Power BI
+
+Connect using:
+
+```
+Power BI
+
+↓
+
+BigQuery Connector
+
+↓
+
+Dataset
+
+↓
+
+Gold Table
+
+↓
+
+Direct Query
+```
+
+---
+
+# 📉 Dashboard
+
+Dashboard Components
+
+- Patient Filter
+- Heart Rate Gauge
+- Temperature Gauge
+- SPO₂ Gauge
+- Blood Pressure Card
+- Risk Level Indicator
+- Live Patient Table
+- Trend Charts
+- Conditional Formatting
+
+---
+
+# 🔴 Live Dashboard Flow
+
+```
+User Selects Patient
+
+        │
+
+        ▼
+
+Power BI
+
+        │
+
+        ▼
+
+BigQuery Direct Query
+
+        │
+
+        ▼
+
+Latest Patient Record
+
+        │
+
+        ▼
+
+Dashboard Refreshes Automatically
+```
+
+---
+
+# 🎯 Key Features
+
+- Real-time patient vital simulation
+- Streaming ingestion with Pub/Sub
+- Apache Beam streaming pipeline
+- Google Cloud Dataflow execution
+- Medallion Architecture (Bronze, Silver, Gold)
+- Cloud Storage data lake
+- BigQuery analytics layer
+- Live Power BI dashboard
+- Modular project structure
+- Environment-based configuration
+- Fault injection for testing
+- GitHub-ready project
+
+---
+
+# 📌 Future Enhancements
+
+- Add Apache Airflow orchestration
+- Dockerize the application
+- CI/CD with GitHub Actions
+- Data quality monitoring
+- Cloud Logging & Monitoring
+- Slack/Email alerts for critical patients
+- Machine Learning-based patient risk prediction
+
+---
+
+# 👨‍💻 Author
+
+**Manish Kawale**
+
+**Data Engineer**
+
+Skills:
+- Python
+- Apache Beam
+- Google Cloud Platform
+- Pub/Sub
+- Dataflow
+- BigQuery
+- Cloud Storage
+- SQL
+- Power BI
+- Git & GitHub
 
 
 
 
 
 
-
-
-START
-  │
-  ▼
-1️⃣ Create Google Cloud (GCP) Account
-  │
-  ├── Create Free Trial Account
-  ├── Add Card Details
-  └── Receive $300 Free Credits
-  │
-  ▼
-2️⃣ Create New GCP Project
-  │
-  ├── Click New Project
-  ├── Give Project Name
-  └── Select Project
-  │
-  ▼
-3️⃣ Open Google Cloud Shell
-  │
-  ├── Open Terminal
-  └── Open Cloud Shell Editor (VS Code-like)
-  │
-  ▼
-4️⃣ Create Project Repository
-  │
-  ├── mkdir patient-vital-monitor
-  ├── cd patient-vital-monitor
-  └── Root Project Folder Ready
-  │
-  ▼
-5️⃣ Create Simulator Folder
-  │
-  ├── mkdir simulator
-  ├── cd simulator
-  ├── touch patient_vital_simulator.py
-  └── touch .env
-  │
-  ▼
-6️⃣ Write Patient Simulator Code
-  │
-  ├── Load .env
-  ├── Generate Patient IDs
-  ├── Generate Random Vitals
-  ├── Inject Errors
-  ├── Convert Dictionary → JSON
-  ├── Encode UTF-8
-  └── Publish to Pub/Sub
-  │
-  ▼
-7️⃣ Configure Simulator .env
-  │
-  ├── Project ID
-  ├── Topic Name
-  ├── Patient Count
-  ├── Stream Interval
-  └── Error Rate
-  │
-  ▼
-8️⃣ Enable Required APIs
-  │
-  ├── Pub/Sub API
-  ├── Cloud Storage API
-  ├── Dataflow API
-  └── BigQuery API
-  │
-  ▼
-9️⃣ Create Pub/Sub Resources
-  │
-  ├── Create Topic
-  └── Create Pull Subscription
-  │
-  ▼
-🔟 Configure IAM Permissions
-  │
-  ├── Pub/Sub Admin
-  ├── BigQuery Admin
-  ├── Storage Admin
-  └── Editor Role (if required)
-  │
-  ▼
-1️⃣1️⃣ Run Simulator
-  │
-  ├── python patient_vital_simulator.py
-  └── Verify Messages in Pub/Sub
-  │
-  ▼
-1️⃣2️⃣ Stop Simulator
-  │
-  └── Ctrl + C
-  │
-  ▼
-1️⃣3️⃣ Create Dataflow Folder
-  │
-  ├── cd ..
-  ├── mkdir dataflow
-  ├── cd dataflow
-  ├── touch streaming_medallion_pipeline.py
-  └── touch .env
-  │
-  ▼
-1️⃣4️⃣ Write Apache Beam Pipeline
-  │
-  ├── Import Modules
-  ├── Load .env
-  ├── Configure Pipeline Options
-  ├── Bronze Layer
-  ├── Silver Layer
-  ├── Gold Layer
-  └── BigQuery Output
-  │
-  ▼
-1️⃣5️⃣ Configure Dataflow .env
-  │
-  ├── Project ID
-  ├── Subscription
-  ├── Bronze Path
-  ├── Silver Path
-  ├── BigQuery Table
-  ├── Temp Path
-  ├── Staging Path
-  └── Region
-  │
-  ▼
-1️⃣6️⃣ Create Google Cloud Storage Bucket
-  │
-  ├── Create Bucket
-  └── Beam Creates:
-        ├── bronze/
-        ├── silver/
-        ├── temp/
-        └── staging/
-  │
-  ▼
-1️⃣7️⃣ Create BigQuery Resources
-  │
-  ├── Create Dataset
-  ├── Create Gold Table
-  └── Define Schema
-  │
-  ▼
-1️⃣8️⃣ Install Dependencies
-  │
-  ├── Apache Beam
-  ├── Beam GCP Libraries
-  └── python-dotenv
-  │
-  ▼
-1️⃣9️⃣ Run Dataflow Pipeline
-  │
-  ├── Execute Beam Pipeline
-  ├── Upload to Dataflow
-  └── Streaming Job Starts
-  │
-  ▼
-2️⃣0️⃣ Restart Simulator
-  │
-  ├── Generate Patient Data
-  └── Stream to Pub/Sub
-  │
-  ▼
-2️⃣1️⃣ Data Processing Begins
-  │
-  ├── Pub/Sub
-  │
-  ▼
-  Bronze Layer
-  │
-  ├── Decode UTF-8
-  ├── Store Raw JSON
-  └── Write to GCS
-  │
-  ▼
-  Silver Layer
-  │
-  ├── Parse JSON
-  ├── Validate Records
-  ├── Remove Invalid Data
-  └── Write Clean Data
-  │
-  ▼
-  Gold Layer
-  │
-  ├── Calculate Risk Score
-  ├── Assign Risk Level
-  ├── Group by Patient
-  ├── Aggregate Records
-  └── Write to BigQuery
-  │
-  ▼
-2️⃣2️⃣ Verify Pipeline
-  │
-  ├── Check Pub/Sub
-  ├── Check Bronze Bucket
-  ├── Check Silver Bucket
-  ├── Check BigQuery Table
-  └── Verify Dataflow Graph
-  │
-  ▼
-2️⃣3️⃣ Push Project to GitHub
-  │
-  ├── Create GitHub Repository
-  ├── git init
-  ├── git add .
-  ├── git commit
-  ├── git remote add origin
-  ├── Generate Personal Access Token
-  └── git push origin main
-  │
-  ▼
-2️⃣4️⃣ Connect Power BI
-  │
-  ├── Connect BigQuery
-  ├── Select Dataset
-  ├── Select Gold Table
-  └── Use Direct Query
-  │
-  ▼
-2️⃣5️⃣ Build Dashboard
-  │
-  ├── Patient Slicer
-  ├── Heart Rate Gauge
-  ├── SPO₂ Gauge
-  ├── Temperature Gauge
-  ├── Risk Level Card
-  └── Conditional Formatting
-  │
-  ▼
-2️⃣6️⃣ Live Dashboard
-  │
-  ├── Select Patient
-  ├── BigQuery Executes Query
-  ├── Latest Data Returned
-  └── Dashboard Updates Automatically
-  │
-  ▼
-                🎉 PROJECT COMPLETED
